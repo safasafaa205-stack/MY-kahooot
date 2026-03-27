@@ -3,226 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مختبر صفاء المصري للذكاءات</title>
+    <title>مختبر الإبداع المعرفي - صفاء المصري</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
         :root { 
-            --sky-blue: #87CEEB; --pearl: #fffafa; --gold: #ffd700;
-            --skin: #ffdbac; --hair: #3e2723; --dress: #ff4081;
+            --cool-blue: #003366; 
+            --pearl-velvet: #fdfcfb; 
+            --gold-sun: rgba(255, 215, 0, 0.5);
+            --royal-gold: #D4AF37;
         }
         
         body { 
             font-family: 'Cairo', sans-serif; margin: 0; min-height: 100vh; 
             display: flex; justify-content: center; align-items: center; 
-            background: linear-gradient(to bottom, #ade8f4, #caf0f8);
-            overflow: hidden; perspective: 1000px;
+            background: radial-gradient(circle, #001f3f, #000);
+            overflow: hidden; position: relative;
         }
 
-        /* شمس مشرقة متوهجة */
-        .sun {
-            position: absolute; top: 40px; right: 40px;
-            width: 120px; height: 120px;
-            background: radial-gradient(circle, #fff700, #ff8c00);
-            border-radius: 50%; box-shadow: 0 0 80px #ffea00;
-            animation: pulse 4s infinite alternate; z-index: 1;
+        /* أشعة الشمس الذهبية التي تغزو المكان */
+        .sun-rays {
+            position: absolute; top: -150px; right: -150px;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, var(--gold-sun) 0%, transparent 70%);
+            z-index: 0; animation: sunGlow 6s infinite alternate;
         }
-        .rays {
-            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: repeating-conic-gradient(from 0deg, rgba(255,255,255,0.2) 0deg 20deg, transparent 20deg 40deg);
-            animation: spin 20s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.2); opacity: 1; } }
+        @keyframes sunGlow { from { opacity: 0.4; transform: scale(1); } to { opacity: 0.9; transform: scale(1.1); } }
 
-        /* مسرح الفتاة 3D */
-        .stage-3d {
-            position: absolute; bottom: 50px; left: 80px;
-            width: 200px; height: 400px; z-index: 10;
-            transform-style: preserve-3d; transition: 0.5s ease;
+        /* الأفاتار البشري الحقيقي - خارج الواجهة */
+        .girl-avatar {
+            position: absolute; bottom: 30px; left: 40px; width: 200px;
+            z-index: 5; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .girl-avatar img { 
+            width: 100%; border-radius: 30px; 
+            border: 4px solid var(--royal-gold);
+            box-shadow: 0 0 25px var(--royal-gold);
         }
 
-        .girl-3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: idle 3s infinite ease-in-out; }
-        @keyframes idle { 0%, 100% { transform: rotateY(10deg); } 50% { transform: rotateY(-10deg) translateY(-10px); } }
-
-        /* أجزاء الجسم 3D */
-        .head { position: absolute; top: 0; left: 65px; width: 70px; height: 80px; background: var(--skin); border-radius: 35px; border: 1px solid #d4a373; z-index: 5; transform-style: preserve-3d; }
-        .hair-long { position: absolute; top: -5px; left: -10px; width: 90px; height: 220px; background: var(--hair); border-radius: 45px 45px 20px 20px; z-index: -1; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); }
-        .eye { position: absolute; top: 35px; width: 8px; height: 8px; background: #333; border-radius: 50%; transition: 0.3s; }
-        .eye.l { left: 18px; } .eye.r { right: 18px; }
-        .mouth { position: absolute; bottom: 15px; left: 25px; width: 20px; height: 10px; border: 2px solid #333; border-top: 0; border-radius: 0 0 10px 10px; }
-
-        .torso { position: absolute; top: 80px; left: 60px; width: 80px; height: 110px; background: var(--dress); border-radius: 20px 20px 40px 40px; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
-        .arm { position: absolute; top: 85px; width: 18px; height: 80px; background: var(--skin); border-radius: 10px; transform-origin: top; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .arm.l { left: 40px; } .arm.r { right: 40px; }
-        .leg { position: absolute; bottom: 100px; width: 22px; height: 110px; background: #fff; border-radius: 5px; border-bottom: 10px solid #222; }
-        .leg.l { left: 75px; } .leg.r { right: 105px; }
-
-        /* حركات التفاعل الحي */
-        .win .girl-3d { animation: jump 0.6s 3; }
-        @keyframes jump { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-50px) scale(1.05); } }
-        .win .arm.l { transform: rotate(140deg); } .win .arm.r { transform: rotate(-140deg); }
-        .win .eye { background: #00ff00; box-shadow: 0 0 10px #00ff00; }
-
-        .lose .girl-3d { transform: rotateX(20deg); transition: 0.5s; }
-        .lose .arm { transform: rotate(15deg); }
-        .lose .eye { background: #ff0000; height: 2px; }
-
-        /* واجهة لؤلؤية محمرة */
-        #main-box { 
-            background: linear-gradient(135deg, #fffafa 0%, #ffe4e1 100%);
-            width: 80%; max-width: 850px; padding: 40px; border-radius: 40px; 
-            border: 6px double var(--gold); position: relative; z-index: 20;
-            margin-left: 200px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            text-align: center;
+        /* الواجهة اللؤلؤية المخملية */
+        #dashboard { 
+            background: var(--pearl-velvet);
+            background-image: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            width: 92%; max-width: 900px; padding: 40px; 
+            border-radius: 45px; border: 5px double var(--royal-gold);
+            text-align: center; z-index: 10;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.7);
+            position: relative; color: #333;
         }
 
-        .q-card { background: white; padding: 25px; border-radius: 20px; border-right: 15px solid #d81b60; margin-bottom: 25px; font-size: 1.4rem; text-align: right; line-height: 1.6; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .opt { padding: 18px; border: 2px solid #eee; border-radius: 15px; cursor: pointer; transition: 0.3s; font-weight: bold; background: white; font-family: 'Cairo'; }
-        .opt:hover { border-color: var(--dress); background: #fff0f5; }
-        .correct { background: #4caf50 !important; color: white; border-color: #2e7d32; }
-        .wrong { background: #f44336 !important; color: white; border-color: #b71c1c; }
+        .question-card { 
+            font-size: 1.6rem; margin-bottom: 30px; line-height: 1.8; text-align: right; 
+            border-right: 12px solid var(--royal-gold); padding: 35px; 
+            background: #fff; border-radius: 20px; color: #222;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+        }
 
-        .btn { background: #d81b60; color: white; padding: 15px 50px; border: none; border-radius: 30px; cursor: pointer; font-size: 1.2rem; font-family: 'Cairo'; margin-top: 20px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .option-btn { 
+            padding: 22px; background: #fff; border: 2px solid #ddd; 
+            border-radius: 20px; cursor: pointer; transition: 0.3s; 
+            font-weight: bold; color: #444; font-size: 1.15rem;
+        }
+        .option-btn:hover { border-color: var(--royal-gold); background: #fffdf0; transform: translateY(-5px); }
         
-        .report-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .report-table th, td { padding: 12px; border: 1px solid #ddd; text-align: right; }
-        .report-table th { background: #fce4ec; }
+        .correct { background: rgba(39, 174, 96, 0.8) !important; color: #fff !important; border-color: #2ecc71 !important; }
+        .wrong { background: rgba(198, 40, 40, 0.8) !important; color: #fff !important; border-color: #e74c3c !important; }
 
-        @media (max-width: 900px) { #main-box { margin-left: 0; width: 95%; } .stage-3d { display: none; } }
+        .btn-royal { 
+            background: linear-gradient(to bottom, var(--royal-gold), #b8860b); 
+            color: #fff; padding: 18px 75px; border-radius: 50px; 
+            border: none; font-size: 1.3rem; font-weight: bold; cursor: pointer; 
+            margin-top: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .report-table { width: 100%; border-collapse: collapse; margin-top: 25px; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .report-table th, .report-table td { padding: 15px; border: 1px solid #eee; text-align: right; font-size: 0.95rem; color: #333; }
+        .report-table th { background: #001f3f; color: white; }
+
+        #quiz-section, #score-section { display: none; }
+
+        @media print { .no-print, .girl-avatar, .sun-rays { display: none !important; } body { background: white; } #dashboard { border: 2px solid #000; box-shadow: none; width: 100%; } .question-card { color: black !important; } }
     </style>
 </head>
 <body>
 
-    <div class="sun"><div class="rays"></div></div>
+    <div class="sun-rays no-print"></div>
 
-    <div class="stage-3d" id="stage">
-        <div class="girl-3d" id="girl">
-            <div class="hair-long"></div>
-            <div class="head">
-                <div class="eye l"></div> <div class="eye r"></div>
-                <div class="mouth" id="mouth"></div>
-            </div>
-            <div class="torso"></div>
-            <div class="arm l"></div> <div class="arm r"></div>
-            <div class="leg l"></div> <div class="leg r"></div>
-        </div>
+    <div class="girl-avatar no-print" id="avatar-box">
+        <img id="avatar-img" src="https://i.ibb.co/vz4P74Y/real-girl.png" alt="صفاء المصري">
     </div>
 
-    <div id="main-box">
-        <div id="start">
-            <h1 style="color: #d81b60;">مختبر الإبداع والذكاء</h1>
-            <p style="font-weight: bold;">بإشراف الأخصائية: صفاء المصري</p>
-            <input type="text" id="name" placeholder="اسم الطالبة" style="padding:15px; width:60%; border-radius:10px; border:1px solid #ccc; margin:10px;"><br>
-            <input type="text" id="class" placeholder="الصف" style="padding:15px; width:60%; border-radius:10px; border:1px solid #ccc; margin:10px;"><br>
-            <button class="btn" onclick="startQuiz()">ابدأ رحلة التفكير ⮕</button>
+    <div id="dashboard">
+        <div id="start-screen">
+            <h1 style="color: var(--deep-blue); font-size: 3rem; margin: 0;">مختبر الموهبة والإبداع</h1>
+            <h3 style="color: var(--royal-gold); margin-top: 5px;">بإشراف الأخصائية: صفاء المصري</h3>
+            <p style="font-weight: bold; color: #555; font-size: 1.2rem;">تحليل المواقف المعرفية العليا (13 ذكاءً)</p>
+            <div style="margin-top: 40px;">
+                <input type="text" id="p-name" placeholder="اسم المبدع المتقدم" style="padding:22px; width:75%; border-radius:15px; border:2px solid #ddd; margin:10px; text-align:center; font-size:1.1rem;"><br>
+                <input type="text" id="p-class" placeholder="الصف الدراسي" style="padding:22px; width:75%; border-radius:15px; border:2px solid #ddd; margin:10px; text-align:center; font-size:1.1rem;"><br>
+                <button class="btn-royal" onclick="begin()">دخول المختبر ⮕</button>
+            </div>
         </div>
 
-        <div id="quiz" style="display:none;">
-            <div id="question" class="q-card"></div>
-            <div id="options" class="grid"></div>
-            <button id="next" class="btn" style="display:none;" onclick="loadNext()">الموقف التالي ⮕</button>
+        <div id="quiz-section">
+            <div id="q-text" class="question-card"></div>
+            <div id="o-grid" class="options-grid"></div>
+            <button id="next-btn" class="btn-royal" style="display:none;" onclick="nextQ()">تحليل الموقف التالي ⮕</button>
         </div>
 
-        <div id="result" style="display:none;">
-            <h2 style="color: #d81b60;">سجل الإنجاز المعرفي</h2>
-            <div id="info" style="text-align: right; padding: 15px; background: white; border-radius: 10px; margin-bottom: 10px;"></div>
-            <h1 id="score-text"></h1>
-            <table class="report-table" id="report">
-                <thead><tr><th>الموقف</th><th>إجابتك</th><th>الحالة</th></tr></thead>
-                <tbody></tbody>
+        <div id="score-section">
+            <h2 style="color: var(--royal-gold); font-size: 2rem;">تقرير الموهبة والذكاءات المتعددة</h2>
+            <div id="final-info" style="margin-bottom:20px; font-weight:bold; font-size: 1.2rem; color: var(--deep-blue);"></div>
+            <h1 id="score-val" style="font-size: 5.5rem; color: var(--deep-blue); margin: 10px 0;"></h1>
+            <table class="report-table no-print">
+                <thead><tr><th>الموقف المعرفي</th><th>إجابتك</th><th>النتيجة</th></tr></thead>
+                <tbody id="res-log"></tbody>
             </table>
-            <button class="btn" onclick="location.reload()">إعادة الاختبار</button>
-            <button class="btn" style="background:#444;" onclick="window.print()">طباعة التقرير</button>
+            <div class="no-print">
+                <button class="btn-royal" onclick="window.print()">طباعة السجل الشامل 🖨️</button>
+                <button class="btn-royal" onclick="adminReset()" style="background:#444; color:#fff; margin-right:15px;">محاولة جديدة (برمز الأخصائية) 🔑</button>
+            </div>
         </div>
     </div>
 
 <script>
-    const audio = new (window.AudioContext || window.webkitAudioContext)();
-    function beep(f) {
-        const o = audio.createOscillator(); const g = audio.createGain();
-        o.connect(g); g.connect(audio.destination);
-        o.frequency.value = f; g.gain.value = 0.1;
-        o.start(); o.stop(audio.currentTime + 0.2);
+    // نظام الصوت الرقمي المتطور
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(f) {
+        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.5);
     }
 
-    const data = [
-        { q: "1. إذا رأيت نمطاً متكرراً في سلوك الطبيعة (مثل هجرة الطيور) وربطته بمعادلة زمنية دقيقة، فأنت تستخدم:", a: ["ذكاء طبيعي رياضي", "ذكاء مكاني", "ذكاء لغوي", "ذكاء ذاتي"], c: 0 },
-        { q: "2. عند مواجهة مشكلة اجتماعية معقدة، قدرتك على تخيل 'نفسك' مكان الآخرين وفهم دوافعهم الخفية تعني:", a: ["ذكاء اجتماعي عاطفي", "ذكاء لغوي", "ذكاء وجودي", "ذكاء حركي"], c: 0 },
-        { q: "3. تخيل تحريك مكعب روبيك في عقلك دون لمسه فعلياً للوصول للحل يمثل ذكاءً:", a: ["بصرياً مكانياً معقداً", "منطقياً جافاً", "طبيعياً", "موسيقياً"], c: 0 },
-        { q: "4. التساؤل المستمر عن 'لماذا نحن هنا؟' ومحاولة ربط العلوم بالهدف من الحياة هو:", a: ["ذكاء وجودي فلسفي", "ذكاء ذاتي", "ذكاء اجتماعي", "ذكاء رياضي"], c: 0 },
-        { q: "5. استخدام 'الاستعارات الكبرى' في حديثك لتبسيط مفاهيم فيزيائية صعبة لزميلاتك هو:", a: ["ذكاء لغوي تعليمي", "ذكاء حركي", "ذكاء موسيقي", "ذكاء مكاني"], c: 0 },
-        { q: "6. إدراك الفوارق البسيطة جداً بين نغمات صوت المحرك المعطل لاكتشاف العطل يدمج بين:", a: ["الذكاء الموسيقي والمنطقي", "الذكاء اللغوي", "الذكاء الذاتي", "الذكاء الطبيعي"], c: 0 },
-        { q: "7. الالتزام بمبدأ أخلاقي حتى لو كان سيؤدي لخسارتك المادية هو قمة الذكاء:", a: ["الأخلاقي الذاتي", "الاجتماعي", "الرياضي", "البصري"], c: 0 },
-        { q: "8. القدرة على التحكم في نبضات قلبك وهدوئك أثناء إلقاء كلمة أمام جمهور غفير هي:", a: ["ذكاء ذاتي وعاطفي", "ذكاء لغوي", "ذكاء حركي", "ذكاء طبيعي"], c: 0 },
-        { q: "9. تصميم خوارزمية برمجية تحاكي تفكير البشر في حل الألغاز يتطلب:", a: ["ذكاء رقمي منطقي", "ذكاء بصري", "ذكاء اجتماعي", "ذكاء لغوي"], c: 0 },
-        { q: "10. تعلم رقصة شعبية أو حركة رياضية من المرة الأولى بمجرد النظر يمثل ذكاءً:", a: ["حركياً جسدياً عالياً", "مكانياً", "ذاتياً", "موسيقياً"], c: 0 },
-        { q: "11. ربط الحالة الجوية الحالية بنمط مناخي حدث قبل سنوات واستنتاج موعد المطر بدقة هو:", a: ["ذكاء طبيعي تحليلي", "ذكاء رياضي", "ذكاء بصري", "ذكاء لغوي"], c: 0 },
-        { q: "12. القدرة على قيادة فريق عمل مختلف الطباع وتحفيز كل فرد بطريقة تناسب شخصيته هي:", a: ["ذكاء قيادي اجتماعي", "ذكاء ذاتي", "ذكاء وجودي", "ذكاء حركي"], c: 1 },
-        { q: "13. استنتاج القوانين التي تربط بين حركة الكواكب والذرات الدقيقة في جسد الإنسان هو:", a: ["ذكاء كوني شمولي", "ذكاء رياضي", "ذكاء بصري", "ذكاء لغوي"], c: 0 }
+    const quizData = [
+        { q: "1. تنجذب لتفكيك الأنظمة والأجهزة المعقدة لاكتشاف خوارزميات عملها الداخلية بدقة عالية:", a: ["نمط حركي/تقني", "استنتاج منطقي", "إدراك بصري", "وعي وجودي"], c: 1 },
+        { q: "2. تستطيع كشف مشاعر الآخرين الحقيقية وتوقع أفعالهم من خلال ملاحظة نبرات صوتهم العفوية:", a: ["ذكاء اجتماعي", "ذكاء ذاتي", "ذكاء لغوي", "ذكاء عاطفي"], c: 0 },
+        { q: "3. تربط بين أنماط عروق أوراق الشجر ونظام جريان الأنهار في الخرائط الجغرافية بمنظور كوني:", a: ["استنتاج طبيعي", "ذكاء مكاني", "ذكاء رياضي", "ذكاء بصري"], c: 0 },
+        { q: "4. تلاحظ الإيقاعات غير المتوقعة في محيطك وتستطيع توظيف 'الصمت' بين الأصوات لخلق معنى إبداعي:", a: ["ذكاء موسيقي", "ذكاء حركي", "ذكاء ذاتي", "ذكاء لغوي"], c: 0 },
+        { q: "5. تستخدم الاستعارات اللغوية البليغة لوصف مفاهيم 'مجردة' فلسفية لا يدركها الآخرون بسهولة:", a: ["ذكاء لغوي", "ذكاء اجتماعي", "ذكاء وجودي", "ذكاء بصري"], c: 0 },
+        { q: "6. تستطيع 'تدوير' مجسمات معقدة في مخيلتك وتوقع شكل ظلالها قبل سقوط الضوء عليها فعلياً:", a: ["ذكاء مكاني", "ذكاء منطقي", "ذكاء طبيعي", "ذكاء حركي"], c: 0 },
+        { q: "7. تمارس النقد المعرفي لقراراتك وتضع استراتيجيات لتحسين وعيك بناءً على مبادئك الأخلاقية الصارمة:", a: ["ذكاء ذاتي", "ذكاء اجتماعي", "ذكاء وجودي", "ذكاء أخلاقي"], c: 0 },
+        { q: "8. تشغل بالك أسئلة الوجود الكبرى وتبحث عن غايات الأشياء البعيدة عن المحسوسات المادية:", a: ["ذكاء وجودي", "ذكاء طبيعي", "ذكاء منطقي", "ذكاء ذاتي"], c: 0 },
+        { q: "9. تستطيع إيجاد 'الخيط المفقود' والأنماط المعقدة المخفية بين مجموعة بيانات تبدو عشوائية للآخرين:", a: ["ذكاء منطقي/رياضي", "ذكاء لغوي", "ذكاء رقمي", "ذكاء بصري"], c: 0 },
+        { q: "10. ترفض الانصياع لسلوك جماعي مبرر اجتماعياً لأنك تمتلك بوصلة قيمية داخلية مستقلة تماماً:", a: ["ذكاء أخلاقي", "ذكاء اجتماعي", "ذكاء وجودي", "ذكاء ذاتي"], c: 0 },
+        { q: "11. تبتكر استراتيجيات تعليمية غير تقليدية لتبسيط فكرة علمية صعبة لزملائك باستخدام أساليب المحاكاة:", a: ["ذكاء تعليمي", "ذكاء لغوي", "ذكاء حركي", "ذكاء بصري"], c: 0 },
+        { q: "12. تدرك الحالة المزاجية لمن حولك بمجرد دخولك المكان من خلال تحليل 'الصمت' وحركات العيون:", a: ["ذكاء عاطفي/وجداني", "ذكاء مكاني", "ذكاء اجتماعي", "ذكاء ذاتي"], c: 0 },
+        { q: "13. تنجذب لفهم 'خوارزميات' التفكير الرقمي وكيفية معالجة وتدفق البيانات خلف الشاشات الذكية:", a: ["ذكاء رقمي", "ذكاء منطقي", "ذكاء حركي", "ذكاء بصري"], c: 0 }
     ];
 
-    let current = 0, score = 0, log = [];
+    let qi = 0, score = 0, resultsLog = [];
 
-    function startQuiz() {
-        if(!document.getElementById('name').value) return alert("اكتبي اسمكِ أولاً");
-        document.getElementById('start').style.display = 'none';
-        document.getElementById('quiz').style.display = 'block';
-        showQ();
+    function begin() {
+        if(!document.getElementById('p-name').value) return alert("من فضلك أدخلي اسم المبدع للتحليل");
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        loadQ();
     }
 
-    function showQ() {
-        resetStage();
-        const q = data[current];
-        document.getElementById('question').innerText = q.q;
-        const opts = document.getElementById('options'); opts.innerHTML = '';
-        document.getElementById('next').style.display = 'none';
+    function updateAI(state) {
+        const av = document.getElementById('avatar-box');
+        if(state === 'happy') {
+            av.style.transform = 'scale(1.2) translateY(-20px)';
+        } else if(state === 'sad') {
+            av.style.transform = 'scale(0.9) rotateX(20deg)';
+        } else {
+            av.style.transform = 'scale(1) rotateX(0)';
+        }
+    }
 
-        q.a.forEach((o, i) => {
+    function loadQ() {
+        updateAI('idle');
+        const q = quizData[qi];
+        document.getElementById('q-text').innerText = q.q;
+        const g = document.getElementById('o-grid'); g.innerHTML = '';
+        document.getElementById('next-btn').style.display = 'none';
+
+        q.a.forEach((opt, i) => {
             const b = document.createElement('button');
-            b.className = 'opt'; b.innerText = o;
-            b.onclick = () => check(i, b); opts.appendChild(b);
+            b.className = 'option-btn'; b.innerText = opt;
+            b.onclick = () => check(i, b); g.appendChild(b);
         });
     }
 
-    function check(i, b) {
-        const correct = data[current].c;
-        const btns = document.querySelectorAll('.opt');
+    function check(idx, b) {
+        const correct = quizData[qi].c;
+        const btns = document.querySelectorAll('.option-btn');
         btns.forEach(btn => btn.style.pointerEvents = 'none');
 
-        const stage = document.getElementById('stage');
-        if(i === correct) {
-            score++; b.classList.add('correct');
-            stage.className = 'stage-3d win'; beep(800);
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 } });
+        let isCorrect = (idx === correct);
+        if(isCorrect) {
+            b.classList.add('correct'); score++;
+            playBeep(880); updateAI('happy');
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
         } else {
-            b.classList.add('wrong'); btns[correct].classList.add('correct');
-            stage.className = 'stage-3d lose'; beep(200);
+            if(b) b.classList.add('wrong');
+            btns[correct].classList.add('correct');
+            playBeep(220); updateAI('sad');
         }
 
-        log.push({ q: data[current].q, ans: data[current].a[i], status: i === correct ? '✅' : '❌' });
-        document.getElementById('next').style.display = 'inline-block';
-    }
-
-    function resetStage() { document.getElementById('stage').className = 'stage-3d'; }
-
-    function loadNext() {
-        current++;
-        if(current < data.length) showQ(); else showResult();
-    }
-
-    function showResult() {
-        document.getElementById('quiz').style.display = 'none';
-        document.getElementById('result').style.display = 'block';
-        document.getElementById('score-text').innerText = `${score} من 13`;
-        document.getElementById('info').innerHTML = `الطالبة: ${document.getElementById('name').value} | الصف: ${document.getElementById('class').value}`;
-        
-        const body = document.querySelector('#report tbody');
-        log.forEach(item => {
-            body.innerHTML += `<tr><td>${item.q}</td><td>${item.ans}</td><td>${item.status}</td></tr>`;
+        resultsLog.push({
+            q: quizData[qi].q,
+            a: quizData[qi].a[idx],
+            s: isCorrect ? "✅ صح" : "❌ خطأ"
         });
+
+        document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    function nextQ() {
+        qi++; if(qi < quizData.length) loadQ(); else finish();
+    }
+
+    function finish() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('score-section').style.display = 'block';
+        updateAI(score >= 7 ? 'happy' : 'idle');
+        
+        document.getElementById('final-info').innerHTML = `
+            <p><strong>اسم المبدع:</strong> ${document.getElementById('p-name').value}</p>
+            <p><strong>الصف الدراسي:</strong> ${document.getElementById('p-class').value}</p>
+            <p><strong>تاريخ التحليل المعرفي:</strong> ${new Date().toLocaleDateString('ar-EG')}</p>
+            <p><strong>إشراف الأخصائية:</strong> صفاء المصري</p>
+        `;
+
+        document.getElementById('score-val').innerText = `${score} / 13`;
+
+        const tableBody = document.getElementById('res-log');
+        resultsLog.forEach(res => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${res.q}</td>
+                    <td>${res.a}</td>
+                    <td style="font-weight:bold; color:${res.s.includes('صح') ? '#2ecc71' : '#e74c3c'}">${res.s}</td>
+                </tr>
+            `;
+        });
+    }
+    
+    function adminReset() {
+        const pass = prompt("الرمز السري للأخصائية صفاء لبدء محاولة جديدة:");
+        if(pass === "1234") {
+            location.reload();
+        } else if(pass !== null) {
+            alert("الرمز غير صحيح.");
+        }
     }
 </script>
 </body>
